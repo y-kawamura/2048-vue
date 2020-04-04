@@ -1,11 +1,12 @@
 <template>
   <div class="tile">
-    <span></span>
+    <span v-if="tile">{{ tile.value }}</span>
   </div>
 </template>
 
 <script>
 export default {
+  props: ['tile'],
 }
 </script>
 
@@ -21,6 +22,8 @@ export default {
   justify-content: center;
   align-items: center;
   font-size: 2rem;
+
+  color: #000;
 }
 
 // #4b59f1

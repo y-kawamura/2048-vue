@@ -3,11 +3,8 @@
     <div>
       <h1 class="title">2048</h1>
       <div class="board">
-        <div class="row" v-for="(rows, rowIndex) in cells" :key="rowIndex">
-          <Tile
-            v-for="(cell, colIndex) in rows"
-            :key="rowIndex * 4 + colIndex"
-          />
+        <div class="row" v-for="(rows, y) in cells" :key="y">
+          <Tile v-for="(cell, x) in rows" :key="y * 4 + x" :tile="cell" />
         </div>
       </div>
     </div>
@@ -15,7 +12,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 import Tile from './Tile';
 
 export default {
@@ -24,9 +21,16 @@ export default {
   },
   computed: {
     ...mapState(['cells']),
-    cellsRow() {
-      return this.cells;
+  },
+  methods: {
+    ...mapActions(['addNewTile']),
+    setup() {
+      this.addNewTile();
+      this.addNewTile();
     },
+  },
+  mounted() {
+    this.setup();
   },
 };
 </script>
