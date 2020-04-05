@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-import { INSERT_CELL, MOVE_CELL, REMOVE_CELL, SET_MOVED } from './mutation-types';
+import { INSERT_CELL, MOVE_CELL, REMOVE_CELL, SET_MOVED, INC_MOVE_COUNT } from './mutation-types';
 import Tile from './tile';
 import helper from './helper';
 
@@ -11,6 +11,7 @@ export default new Vuex.Store({
   state: {
     cells: helper.createCells(),
     moved: false,
+    moveCount: 0,
   },
   getters: {
     availableCells(state) {
@@ -57,7 +58,10 @@ export default new Vuex.Store({
     },
     [SET_MOVED](state, isMoved) {
       state.moved = isMoved;
-    }
+    },
+    [INC_MOVE_COUNT](state) {
+      state.moveCount++;
+    },
   },
   actions: {
     addNewTile({ commit, getters }) {
@@ -69,7 +73,7 @@ export default new Vuex.Store({
     move({ commit, getters }, direction) {
       const vector = helper.getVector(direction);
       const scanningCells = helper.createScanningCells(vector);
-      commit(SET_MOVED, false);
+      let isMoved = false;
 
       scanningCells.forEach((cell) => {
         const tile = getters.getTile(cell);
@@ -93,7 +97,7 @@ export default new Vuex.Store({
             nextTile.merge();
             // 4. remove own tile
             commit(REMOVE_CELL, cell);
-            commit(SET_MOVED, true);
+            isMoved = true;
           } else {
             // 3. move tile
             // Note: Update previous value even if it did not move
@@ -101,11 +105,18 @@ export default new Vuex.Store({
             commit(MOVE_CELL, tile);
 
             if (cell.x !== foremostCell.x || cell.y !== foremostCell.y) {
-              commit(SET_MOVED, true);
+              isMoved = true;
             }
           }
         }
       });
+
+      if (isMoved) {
+        commit(SET_MOVED, true);
+        commit(INC_MOVE_COUNT);
+      } else {
+        commit(SET_MOVED, false);
+      }
     },
   },
   modules: {},
