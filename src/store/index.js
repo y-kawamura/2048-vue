@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-import { INSERT_CELL, MOVE_CELL, REMOVE_CELL } from './mutation-types';
+import { INSERT_CELL, MOVE_CELL, REMOVE_CELL, SET_MOVED } from './mutation-types';
 import Tile from './tile';
 import helper from './helper';
 
@@ -10,6 +10,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     cells: helper.createCells(),
+    moved: false,
   },
   getters: {
     availableCells(state) {
@@ -54,6 +55,9 @@ export default new Vuex.Store({
     [REMOVE_CELL](state, tile) {
       state.cells[tile.y].splice(tile.x, 1, null);
     },
+    [SET_MOVED](state, isMoved) {
+      state.moved = isMoved;
+    }
   },
   actions: {
     addNewTile({ commit, getters }) {
@@ -88,10 +92,15 @@ export default new Vuex.Store({
             nextTile.merge();
             // 4. remove own tile
             commit(REMOVE_CELL, cell);
+            commit(SET_MOVED, true);
           } else {
             // 3. move tile
+            // Note: Update previous value even if it did not move
             tile.update(foremostCell.x, foremostCell.y);
             commit(MOVE_CELL, tile);
+            if (cell.x !== foremostCell.x || cell.y !== foremostCell.y) {
+              commit(SET_MOVED, true);
+            }
           }
         }
       });

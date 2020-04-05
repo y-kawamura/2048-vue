@@ -21,7 +21,7 @@ export default {
     Tile,
   },
   computed: {
-    ...mapState(['cells']),
+    ...mapState(['cells', 'moved']),
     cellIndex() {
       return (x, y) => y * GRID_SIZE + x;
     }
@@ -50,6 +50,10 @@ export default {
       }
       if (e.key == 'ArrowRight') {
         this.move('right');
+      }
+
+      if (this.moved) {
+        this.addNewTile();
       }
     });
   },
