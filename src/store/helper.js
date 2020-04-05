@@ -41,17 +41,15 @@ function createScanningCells(vector) {
   if (vector.y !== 0) {
     // if vertical direction, row is x
     row.forEach((x) => {
-      col.forEach((y, index) => {
-        // first column should not check because can not move
-        if (index !== 0) cells.push({ x, y });
+      col.forEach((y) => {
+        cells.push({ x, y });
       });
     });
   } else {
     // if horizontal direction, row is y
     row.forEach((y) => {
-      col.forEach((x, index) => {
-        // first column should not check because can not move
-        if (index !== 0) cells.push({ x, y });
+      col.forEach((x) => {
+        cells.push({ x, y });
       });
     });
   }

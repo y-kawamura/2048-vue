@@ -186,7 +186,7 @@ describe('Action move', () => {
       x: 0,
       y: 1,
       value: 4,
-      previous: null,
+      previous: { x: 0, y: 1 },
       merged: true,
     });
     expect(store.state.cells[1][1]).to.deep.equal({
@@ -207,15 +207,19 @@ describe('Helper createScanningCells', () => {
     const vector = helper.getVector(dir);
     const scanningCells = helper.createScanningCells(vector);
     expect(scanningCells).to.deep.equal([
+      { x: 0, y: 0 },
       { x: 0, y: 1 },
       { x: 0, y: 2 },
       { x: 0, y: 3 },
+      { x: 1, y: 0 },
       { x: 1, y: 1 },
       { x: 1, y: 2 },
       { x: 1, y: 3 },
+      { x: 2, y: 0 },
       { x: 2, y: 1 },
       { x: 2, y: 2 },
       { x: 2, y: 3 },
+      { x: 3, y: 0 },
       { x: 3, y: 1 },
       { x: 3, y: 2 },
       { x: 3, y: 3 },
@@ -226,15 +230,19 @@ describe('Helper createScanningCells', () => {
     const vector = helper.getVector(dir);
     const scanningCells = helper.createScanningCells(vector);
     expect(scanningCells).to.deep.equal([
+      { x: 0, y: 3 },
       { x: 0, y: 2 },
       { x: 0, y: 1 },
       { x: 0, y: 0 },
+      { x: 1, y: 3 },
       { x: 1, y: 2 },
       { x: 1, y: 1 },
       { x: 1, y: 0 },
+      { x: 2, y: 3 },
       { x: 2, y: 2 },
       { x: 2, y: 1 },
       { x: 2, y: 0 },
+      { x: 3, y: 3 },
       { x: 3, y: 2 },
       { x: 3, y: 1 },
       { x: 3, y: 0 },
@@ -245,15 +253,19 @@ describe('Helper createScanningCells', () => {
     const vector = helper.getVector(dir);
     const scanningCells = helper.createScanningCells(vector);
     expect(scanningCells).to.deep.equal([
+      { x: 0, y: 0 },
       { x: 1, y: 0 },
       { x: 2, y: 0 },
       { x: 3, y: 0 },
+      { x: 0, y: 1 },
       { x: 1, y: 1 },
       { x: 2, y: 1 },
       { x: 3, y: 1 },
+      { x: 0, y: 2 },
       { x: 1, y: 2 },
       { x: 2, y: 2 },
       { x: 3, y: 2 },
+      { x: 0, y: 3 },
       { x: 1, y: 3 },
       { x: 2, y: 3 },
       { x: 3, y: 3 },
@@ -264,15 +276,19 @@ describe('Helper createScanningCells', () => {
     const vector = helper.getVector(dir);
     const scanningCells = helper.createScanningCells(vector);
     expect(scanningCells).to.deep.equal([
+      { x: 3, y: 0 },
       { x: 2, y: 0 },
       { x: 1, y: 0 },
       { x: 0, y: 0 },
+      { x: 3, y: 1 },
       { x: 2, y: 1 },
       { x: 1, y: 1 },
       { x: 0, y: 1 },
+      { x: 3, y: 2 },
       { x: 2, y: 2 },
       { x: 1, y: 2 },
       { x: 0, y: 2 },
+      { x: 3, y: 3 },
       { x: 2, y: 3 },
       { x: 1, y: 3 },
       { x: 0, y: 3 },
