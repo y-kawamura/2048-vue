@@ -4,7 +4,7 @@
       <h1 class="title">2048</h1>
       <div class="board">
         <div class="row" v-for="(rows, y) in cells" :key="y">
-          <Tile v-for="(cell, x) in rows" :key="y * 4 + x" :tile="cell" />
+          <Tile v-for="(cell, x) in rows" :key="cellIndex(x, y)" :tile="cell" />
         </div>
       </div>
     </div>
@@ -14,6 +14,7 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import Tile from './Tile';
+import { GRID_SIZE } from '@/config';
 
 export default {
   components: {
@@ -21,9 +22,12 @@ export default {
   },
   computed: {
     ...mapState(['cells']),
+    cellIndex() {
+      return (x, y) => y * GRID_SIZE + x;
+    }
   },
   methods: {
-    ...mapActions(['addNewTile']),
+    ...mapActions(['addNewTile', 'move']),
     setup() {
       this.addNewTile();
       this.addNewTile();
@@ -31,6 +35,23 @@ export default {
   },
   mounted() {
     this.setup();
+
+    // Add key event
+    window.addEventListener('keydown', (e) => {
+      console.log(e.key);
+      if (e.key == 'ArrowUp') {
+        this.move('up');
+      }
+      if (e.key == 'ArrowDown') {
+        this.move('down');
+      }
+      if (e.key == 'ArrowLeft') {
+        this.move('left');
+      }
+      if (e.key == 'ArrowRight') {
+        this.move('right');
+      }
+    });
   },
 };
 </script>

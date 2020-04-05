@@ -7,7 +7,7 @@ describe('Create Tile instance', () => {
     expect(tile).to.have.property('x', 0);
     expect(tile).to.have.property('y', 1);
     expect(tile).to.have.property('value', 2);
-    expect(tile).to.have.property('previousPosition', null);
+    expect(tile).to.have.property('previous', null);
     expect(tile).to.have.property('merged', false);
   });
 });
@@ -18,8 +18,8 @@ describe('Call Tile update method', () => {
     tile.update(2, 3);
     expect(tile).to.have.property('x', 2);
     expect(tile).to.have.property('y', 3);
-    expect(tile.previousPosition).to.have.property('x', 0);
-    expect(tile.previousPosition).to.have.property('y', 1);
+    expect(tile.previous).to.have.property('x', 0);
+    expect(tile.previous).to.have.property('y', 1);
 
     expect(tile).to.have.property('value', 2);
     expect(tile).to.have.property('merged', false);
@@ -35,6 +35,37 @@ describe('Call Tile merge method', () => {
 
     expect(tile).to.have.property('x', 0);
     expect(tile).to.have.property('y', 1);
-    expect(tile).to.have.property('previousPosition', null);
+    expect(tile).to.have.property('previous', null);
+  });
+});
+
+describe('Call Tile clearMerged method', () => {
+  it('should be clear merged flag', () => {
+    const tile = new Tile(0, 1, 2);
+    tile.clearMerged();
+    expect(tile).to.have.property('merged', false);
+    
+    tile.merge();
+    tile.clearMerged();
+    expect(tile).to.have.property('merged', false);
+  });
+});
+
+describe('Call Tile canMerge method', () => {
+  it('can merge if it has same value and has not been merged yet', () => {
+    const tile1 = new Tile(0, 1, 2);
+    const tile2 = new Tile(0, 2, 2);
+    expect(tile1.canMerge(tile2)).to.be.true;
+  });
+  it('can not merge if it has same value but has already been merged', () => {
+    const tile1 = new Tile(0, 1, 2);
+    const tile2 = new Tile(0, 2, 2);
+    tile1.merge();
+    expect(tile1.canMerge(tile2)).to.be.false;
+  });
+  it('can not merge if it has not same value', () => {
+    const tile1 = new Tile(0, 1, 2);
+    const tile2 = new Tile(0, 2, 4);
+    expect(tile1.canMerge(tile2)).to.be.false;
   });
 });
