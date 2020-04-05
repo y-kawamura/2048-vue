@@ -69,11 +69,12 @@ export default new Vuex.Store({
     move({ commit, getters }, direction) {
       const vector = helper.getVector(direction);
       const scanningCells = helper.createScanningCells(vector);
+      commit(SET_MOVED, false);
 
       scanningCells.forEach((cell) => {
         const tile = getters.getTile(cell);
         if (tile) {
-          // clear merged flag
+          // clear merged flag 
           tile.clearMerged();
 
           // 1. find a possible foremost position
@@ -98,6 +99,7 @@ export default new Vuex.Store({
             // Note: Update previous value even if it did not move
             tile.update(foremostCell.x, foremostCell.y);
             commit(MOVE_CELL, tile);
+
             if (cell.x !== foremostCell.x || cell.y !== foremostCell.y) {
               commit(SET_MOVED, true);
             }

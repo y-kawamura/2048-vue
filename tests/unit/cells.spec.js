@@ -196,9 +196,33 @@ describe('Action move', () => {
       previous: { x: 2, y: 1 },
       merged: false,
     });
-
   })
 
+  it('should set moved flag when moved', () => {
+    const tile1 = new Tile(2, 3, 2);
+    store.state.cells[tile1.y][tile1.x] = tile1;
+
+    store.dispatch('move', 'up');
+    expect(store.state.moved).to.be.true;
+  });
+
+  it('should set moved flag when merged', () => {
+    const tile1 = new Tile(2, 0, 2);
+    const tile2 = new Tile(2, 1, 2);
+    store.state.cells[tile1.y][tile1.x] = tile1;
+    store.state.cells[tile2.y][tile2.x] = tile2;
+
+    store.dispatch('move', 'up');
+    expect(store.state.moved).to.be.true;
+  });
+
+  it('should not set moved flag when not moved', () => {
+    const tile1 = new Tile(2, 0, 2);
+    store.state.cells[tile1.y][tile1.x] = tile1;
+
+    store.dispatch('move', 'up');
+    expect(store.state.moved).to.be.false;
+  });
 });
 
 describe('Helper createScanningCells', () => {
