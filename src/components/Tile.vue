@@ -12,7 +12,6 @@
     >
       <span>{{ tile.value }}</span>
     </div>
-    <div v-else class="tile tile-white"></div>
   </div>
 </template>
 
@@ -23,18 +22,18 @@ export default {
   data() {
     return {
       donePopupAnimation: false,
+      donePopupMergeAnimation: false,
       doneSlideAnimation: false,
     };
   },
   computed: {
     ...mapState(['moveCount']),
     isPopup() {
-      console.log('previous', !this.tile.previous)
       return !this.donePopupAnimation && !this.tile.previous;
     },
     // Note: animation is triggered after slide animation is done
     isPopupMerge() {
-      return this.tile.merged;
+      return !this.donePopupMergeAnimation && this.tile.merged;
     },
     isSlide() {
       return (
@@ -58,6 +57,9 @@ export default {
       if (e.animationName === 'popup') {
         this.donePopupAnimation = true;
       }
+      if (e.animationName === 'popup-merge') {
+        this.donePopupMergeAnimation = true;
+      }
       if (e.animationName.match(/^slide/)) {
         this.doneSlideAnimation = true;
       }
@@ -67,6 +69,7 @@ export default {
     // to restart animation
     moveCount() {
       this.donePopupAnimation = false;
+      this.donePopupMergeAnimation = false;
       this.doneSlideAnimation = false;
     },
   },
@@ -103,9 +106,20 @@ $move-animation-time: 100ms;
   animation: popup $popup-animation-time $move-animation-time;
 }
 .popup-merge {
-  animation: popup $popup-animation-time;
+  animation: popup-merge $popup-animation-time;
 }
 @keyframes popup {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes popup-merge {
   0% {
     transform: scale(0.5);
   }
