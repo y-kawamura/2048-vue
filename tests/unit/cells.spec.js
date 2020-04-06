@@ -186,7 +186,7 @@ describe('Action move', () => {
       x: 0,
       y: 1,
       value: 4,
-      previous: { x: 0, y: 1 },
+      previous: { x: 1, y: 1 },
       merged: true,
     });
     expect(store.state.cells[1][1]).to.deep.equal({

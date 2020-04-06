@@ -13,9 +13,10 @@ class Tile {
     this.y = y;
   }
 
-  merge() {
+  merge(tile) {
     this.merged = true;
     this.value *= 2;
+    this.previous = { x: tile.x, y: tile.y }
   }
 
   clearMerged() {

@@ -94,7 +94,7 @@ export default new Vuex.Store({
 
           if (nextTile && nextTile.canMerge(currTile)) {
             // 3. merge to a next tile
-            nextTile.merge();
+            nextTile.merge(currTile);
             // 4. remove own tile
             commit(REMOVE_CELL, cell);
             isMoved = true;
