@@ -1,7 +1,15 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-import { INSERT_CELL, MOVE_CELL, REMOVE_CELL, SET_MOVED, INC_MOVE_COUNT } from './mutation-types';
+import {
+  INSERT_CELL,
+  MOVE_CELL,
+  REMOVE_CELL,
+  SET_MOVED,
+  INC_MOVE_COUNT,
+  ADD_SCORE,
+  RESET_BOARD,
+} from './mutation-types';
 import Tile from './tile';
 import helper from './helper';
 
@@ -12,6 +20,7 @@ export default new Vuex.Store({
     cells: helper.createCells(),
     moved: false,
     moveCount: 0,
+    score: 0,
   },
   getters: {
     availableCells(state) {
@@ -62,8 +71,19 @@ export default new Vuex.Store({
     [INC_MOVE_COUNT](state) {
       state.moveCount++;
     },
+    [ADD_SCORE](state, value) {
+      state.score += value;
+    },
+    [RESET_BOARD](state) {
+      state.cells = helper.createCells();
+      state.moveCount = 0;
+      state.score = 0;
+    }
   },
   actions: {
+    resetBoard({commit}) {
+      commit(RESET_BOARD);
+    },
     addNewTile({ commit, getters }) {
       const cell = helper.randomCells(getters.availableCells);
       const value = Math.random() > 0.1 ? 2 : 4;
@@ -78,7 +98,7 @@ export default new Vuex.Store({
       scanningCells.forEach((cell) => {
         const tile = getters.getTile(cell);
         if (tile) {
-          // clear merged flag 
+          // clear merged flag
           tile.clearMerged();
 
           // 1. find a possible foremost position
@@ -98,6 +118,8 @@ export default new Vuex.Store({
             // 4. remove own tile
             commit(REMOVE_CELL, cell);
             isMoved = true;
+            // 5. Add score
+            commit(ADD_SCORE, nextTile.value);
           } else {
             // 3. move tile
             // Note: Update previous value even if it did not move
