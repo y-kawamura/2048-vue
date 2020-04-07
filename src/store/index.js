@@ -146,7 +146,7 @@ export default new Vuex.Store({
       const tile = new Tile(cell.x, cell.y, value);
       commit(INSERT_CELL, tile);
     },
-    move({ state, commit, getters }, direction) {
+    moveTile({ state, commit, getters }, direction) {
       const vector = helper.getVector(direction);
       const scanningCells = helper.createScanningCells(vector);
 

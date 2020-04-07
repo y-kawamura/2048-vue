@@ -39,6 +39,8 @@ export default {
     return {
       gameover: false,
       winner: false,
+      touchStartX: 0,
+      touchStartY: 0,
     };
   },
   computed: {
@@ -49,7 +51,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['addNewTile', 'move', 'resetBoard']),
+    ...mapActions(['addNewTile', 'moveTile', 'resetBoard']),
     setup() {
       this.addNewTile();
       this.addNewTile();
@@ -59,17 +61,32 @@ export default {
       this.winner = false;
       this.resetBoard();
       this.setup();
-    }
+    },
+    move(direction) {
+      if (this.gameover || this.winner) {
+        return;
+      }
+
+      this.moveTile(direction);
+
+      if (this.moved) {
+        this.addNewTile();
+
+        if (!this.canMove) {
+          this.gameover = true;
+        }
+
+        if (this.has2048) {
+          this.winner = true;
+        }
+      }
+    },
   },
   mounted() {
     this.setup();
 
     // Add key event
     window.addEventListener('keydown', (e) => {
-      if (this.gameover || this.winner) {
-        return;
-      }
-
       if (e.key == 'ArrowUp') {
         this.move('up');
       }
@@ -82,17 +99,32 @@ export default {
       if (e.key == 'ArrowRight') {
         this.move('right');
       }
+    });
 
-      if (this.moved) {
-        this.addNewTile();
+    // Add swipe event
+    window.addEventListener('touchstart', (e) => {
+      this.touchStartX = e.touches[0].pageX;
+      this.touchStartY = e.touches[0].pageY;
+    });
+    window.addEventListener('touchend', (e) => {
+      const touchEndX = e.changedTouches[0].pageX;
+      const touchEndY = e.changedTouches[0].pageY;
 
-        if (!this.canMove) {
-          this.gameover = true;
-        }
+      const dx = touchEndX - this.touchStartX;
+      const dy = touchEndY - this.touchStartY;
+      const absDx = Math.abs(dx);
+      const absDy = Math.abs(dy);
 
-        if (this.has2048) {
-          this.winner = true;
-        }
+      if (Math.max(absDx, absDy) > 10) {
+        const direction =
+          absDx > absDy
+            ? dx > 0
+              ? 'right'
+              : 'left'
+            : dy > 0
+              ? 'down'
+              : 'up';
+        this.move(direction);
       }
     });
   },
@@ -160,7 +192,7 @@ export default {
       border: none;
       cursor: pointer;
       outline: none;
-      
+
       &:hover {
         background-color: #2e4e6b;
       }

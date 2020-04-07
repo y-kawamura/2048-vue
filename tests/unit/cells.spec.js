@@ -83,7 +83,7 @@ describe('Action move', () => {
     store.state.cells[tile1.y][tile1.x] = tile1;
     store.state.cells[tile2.y][tile2.x] = tile2;
 
-    store.dispatch('move', 'up');
+    store.dispatch('moveTile', 'up');
 
     expect(store.state.cells[0][1]).to.deep.equal({
       x: 1,
@@ -107,7 +107,7 @@ describe('Action move', () => {
     store.state.cells[tile1.y][tile1.x] = tile1;
     store.state.cells[tile2.y][tile2.x] = tile2;
 
-    store.dispatch('move', 'down');
+    store.dispatch('moveTile', 'down');
 
     expect(store.state.cells[3][1]).to.deep.equal({
       x: 1,
@@ -131,7 +131,7 @@ describe('Action move', () => {
     store.state.cells[tile1.y][tile1.x] = tile1;
     store.state.cells[tile2.y][tile2.x] = tile2;
 
-    store.dispatch('move', 'left');
+    store.dispatch('moveTile', 'left');
 
     expect(store.state.cells[1][0]).to.deep.equal({
       x: 0,
@@ -155,7 +155,7 @@ describe('Action move', () => {
     store.state.cells[tile1.y][tile1.x] = tile1;
     store.state.cells[tile2.y][tile2.x] = tile2;
 
-    store.dispatch('move', 'right');
+    store.dispatch('moveTile', 'right');
 
     expect(store.state.cells[1][3]).to.deep.equal({
       x: 3,
@@ -181,7 +181,7 @@ describe('Action move', () => {
     store.state.cells[tile2.y][tile2.x] = tile2;
     store.state.cells[tile3.y][tile3.x] = tile3;
 
-    store.dispatch('move', 'left');
+    store.dispatch('moveTile', 'left');
     expect(store.state.cells[1][0]).to.deep.equal({
       x: 0,
       y: 1,
@@ -202,7 +202,7 @@ describe('Action move', () => {
     const tile1 = new Tile(2, 3, 2);
     store.state.cells[tile1.y][tile1.x] = tile1;
 
-    store.dispatch('move', 'up');
+    store.dispatch('moveTile', 'up');
     expect(store.state.moved).to.be.true;
   });
 
@@ -212,7 +212,7 @@ describe('Action move', () => {
     store.state.cells[tile1.y][tile1.x] = tile1;
     store.state.cells[tile2.y][tile2.x] = tile2;
 
-    store.dispatch('move', 'up');
+    store.dispatch('moveTile', 'up');
     expect(store.state.moved).to.be.true;
   });
 
@@ -220,7 +220,7 @@ describe('Action move', () => {
     const tile1 = new Tile(2, 0, 2);
     store.state.cells[tile1.y][tile1.x] = tile1;
 
-    store.dispatch('move', 'up');
+    store.dispatch('moveTile', 'up');
     expect(store.state.moved).to.be.false;
   });
 });
