@@ -61,9 +61,13 @@ export default new Vuex.Store({
     [MOVE_CELL](state, tile) {
       state.cells[tile.previous.y].splice(tile.previous.x, 1, null);
       state.cells[tile.y].splice(tile.x, 1, tile);
+      if (tile.previous.x !== tile.x || tile.previous.y !== tile.y) {
+        state.moved = true;
+      }
     },
     [REMOVE_CELL](state, tile) {
       state.cells[tile.y].splice(tile.x, 1, null);
+      state.moved = true;
     },
     [SET_MOVED](state, isMoved) {
       state.moved = isMoved;
@@ -90,10 +94,12 @@ export default new Vuex.Store({
       const tile = new Tile(cell.x, cell.y, value);
       commit(INSERT_CELL, tile);
     },
-    move({ commit, getters }, direction) {
+    move({ state, commit, getters }, direction) {
       const vector = helper.getVector(direction);
       const scanningCells = helper.createScanningCells(vector);
-      let isMoved = false;
+      
+      // Clear moved flag
+      commit(SET_MOVED, false);
 
       scanningCells.forEach((cell) => {
         const tile = getters.getTile(cell);
@@ -113,31 +119,23 @@ export default new Vuex.Store({
           const nextTile = getters.getTile(nextCell);
 
           if (nextTile && nextTile.canMerge(currTile)) {
-            // 3. merge to a next tile
+            // 3-a. merge to a next tile
             nextTile.merge(currTile);
             // 4. remove own tile
             commit(REMOVE_CELL, cell);
-            isMoved = true;
             // 5. Add score
             commit(ADD_SCORE, nextTile.value);
           } else {
-            // 3. move tile
-            // Note: Update previous value even if it did not move
+            // 3-b. move tile
+            // Note: We need to update previous value even if it did not move
             tile.update(foremostCell.x, foremostCell.y);
             commit(MOVE_CELL, tile);
-
-            if (cell.x !== foremostCell.x || cell.y !== foremostCell.y) {
-              isMoved = true;
-            }
           }
         }
       });
 
-      if (isMoved) {
-        commit(SET_MOVED, true);
+      if (state.moved) {
         commit(INC_MOVE_COUNT);
-      } else {
-        commit(SET_MOVED, false);
       }
     },
   },
