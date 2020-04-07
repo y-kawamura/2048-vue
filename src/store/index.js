@@ -12,6 +12,7 @@ import {
 } from './mutation-types';
 import Tile from './tile';
 import helper from './helper';
+import { GRID_SIZE } from '@/config';
 
 Vue.use(Vuex);
 
@@ -52,6 +53,41 @@ export default new Vuex.Store({
         return cell;
       };
     },
+    canMove(_, getters) {
+      if (getters.availableCells.length > 0) {
+        return true;
+      }
+
+      // check all cells
+      let cells = [];
+      for (let x = 0; x < GRID_SIZE; x++) {
+        for (let y = 0; y < GRID_SIZE; y++) {
+          cells.push({ x, y });
+        }
+      }
+
+      // check if the tile can merge to next tile for down and right direction
+      for (let index = 0; index < cells.length; index++) {
+        const cell = cells[index];
+        const tile = getters.getTile(cell);
+
+        if (tile) {
+          const nextTileMatch = ['down', 'right'].some((dir) => {
+            const vector = helper.getVector(dir);
+            const nextTile = getters.getTile(helper.nextCell(cell, vector));
+            if (nextTile && tile.value == nextTile.value) {
+              return true;
+            }
+            return false;
+          });
+
+          if (nextTileMatch) {
+            return true;
+          }
+        }
+      }
+      return false;
+    },
   },
   mutations: {
     [INSERT_CELL](state, tile) {
@@ -82,10 +118,10 @@ export default new Vuex.Store({
       state.cells = helper.createCells();
       state.moveCount = 0;
       state.score = 0;
-    }
+    },
   },
   actions: {
-    resetBoard({commit}) {
+    resetBoard({ commit }) {
       commit(RESET_BOARD);
     },
     addNewTile({ commit, getters }) {
@@ -97,7 +133,7 @@ export default new Vuex.Store({
     move({ state, commit, getters }, direction) {
       const vector = helper.getVector(direction);
       const scanningCells = helper.createScanningCells(vector);
-      
+
       // Clear moved flag
       commit(SET_MOVED, false);
 
@@ -111,12 +147,10 @@ export default new Vuex.Store({
           const foremostCell = getters.findForemostPosition(cell, vector);
 
           // 2. Check if can merge
-          const nextCell = {
-            x: foremostCell.x + vector.x,
-            y: foremostCell.y + vector.y,
-          };
           const currTile = getters.getTile(cell);
-          const nextTile = getters.getTile(nextCell);
+          const nextTile = getters.getTile(
+            helper.nextCell(foremostCell, vector)
+          );
 
           if (nextTile && nextTile.canMerge(currTile)) {
             // 3-a. merge to a next tile

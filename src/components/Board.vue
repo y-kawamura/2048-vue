@@ -15,13 +15,16 @@
         <div class="row" v-for="(rows, y) in cells" :key="y">
           <Tile v-for="(cell, x) in rows" :key="cellIndex(x, y)" :tile="cell" />
         </div>
+        <div v-if="gameover" class="gameover">
+          Game Over
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
 import Tile from './Tile';
 import { GRID_SIZE } from '@/config';
 
@@ -29,8 +32,14 @@ export default {
   components: {
     Tile,
   },
+  data() {
+    return {
+      gameover: false,
+    };
+  },
   computed: {
     ...mapState(['cells', 'moved', 'score']),
+    ...mapGetters(['canMove']),
     cellIndex() {
       return (x, y) => y * GRID_SIZE + x;
     },
@@ -42,6 +51,7 @@ export default {
       this.addNewTile();
     },
     newGame() {
+      this.gameover = false;
       this.resetBoard();
       this.setup();
     }
@@ -51,7 +61,10 @@ export default {
 
     // Add key event
     window.addEventListener('keydown', (e) => {
-      console.log(e.key);
+      if (this.gameover) {
+        return;
+      }
+
       if (e.key == 'ArrowUp') {
         this.move('up');
       }
@@ -67,6 +80,10 @@ export default {
 
       if (this.moved) {
         this.addNewTile();
+
+        if (!this.canMove) {
+          this.gameover = true;
+        }
       }
     });
   },
@@ -146,9 +163,22 @@ export default {
   background-color: #34495e;
   padding: 0.5rem;
   border-radius: 0.5rem;
+  position: relative;
 }
 
 .row {
   display: flex;
+}
+
+.gameover {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 4rem;
+  font-weight: bold;
+  color: #f38e8a;
+  text-transform: uppercase;
+  opacity: 0.6;
 }
 </style>

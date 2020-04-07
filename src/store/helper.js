@@ -56,10 +56,18 @@ function createScanningCells(vector) {
   return cells;
 }
 
+function nextCell(cell, vector) {
+  return {
+    x: cell.x + vector.x,
+    y: cell.y + vector.y,
+  }
+}
+
 export default {
   createCells,
   randomCells,
   withinGrid,
   getVector,
   createScanningCells,
+  nextCell,
 };
