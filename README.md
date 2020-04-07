@@ -1,5 +1,13 @@
 # 2048-vue
 
+2048 game with Vue.js
+
+
+## [Demo](https://penta-2048-vue.now.sh/)
+
+![2048-vue-app](https://github.com/y-kawamura/image/blob/master/2048-vue.png) 
+
+
 ## Project setup
 ```
 npm install
