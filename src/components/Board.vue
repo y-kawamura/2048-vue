@@ -15,8 +15,11 @@
         <div class="row" v-for="(rows, y) in cells" :key="y">
           <Tile v-for="(cell, x) in rows" :key="cellIndex(x, y)" :tile="cell" />
         </div>
-        <div v-if="gameover" class="gameover">
+        <div v-if="gameover" class="result gameover">
           Game Over
+        </div>
+        <div v-if="winner" class="result winner">
+          You Win
         </div>
       </div>
     </div>
@@ -35,11 +38,12 @@ export default {
   data() {
     return {
       gameover: false,
+      winner: false,
     };
   },
   computed: {
     ...mapState(['cells', 'moved', 'score']),
-    ...mapGetters(['canMove']),
+    ...mapGetters(['canMove', 'has2048']),
     cellIndex() {
       return (x, y) => y * GRID_SIZE + x;
     },
@@ -52,6 +56,7 @@ export default {
     },
     newGame() {
       this.gameover = false;
+      this.winner = false;
       this.resetBoard();
       this.setup();
     }
@@ -61,7 +66,7 @@ export default {
 
     // Add key event
     window.addEventListener('keydown', (e) => {
-      if (this.gameover) {
+      if (this.gameover || this.winner) {
         return;
       }
 
@@ -83,6 +88,10 @@ export default {
 
         if (!this.canMove) {
           this.gameover = true;
+        }
+
+        if (this.has2048) {
+          this.winner = true;
         }
       }
     });
@@ -170,15 +179,22 @@ export default {
   display: flex;
 }
 
-.gameover {
+.result {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 4rem;
   font-weight: bold;
-  color: #f38e8a;
   text-transform: uppercase;
   opacity: 0.6;
+  text-align: center;
+}
+
+.gameover {
+  color: #f38e8a;
+}
+.winner {
+  color: #fffc4a;
 }
 </style>

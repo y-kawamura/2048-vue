@@ -88,6 +88,22 @@ export default new Vuex.Store({
       }
       return false;
     },
+    has2048(_, getters) {
+      let cells = [];
+      for (let x = 0; x < GRID_SIZE; x++) {
+        for (let y = 0; y < GRID_SIZE; y++) {
+          cells.push({ x, y });
+        }
+      }
+
+      for (let index = 0; index < cells.length; index++) {
+        const tile = getters.getTile(cells[index]);
+        if (tile && tile.value === 2048) {
+          return true;
+        }
+      }
+      return false;
+    },
   },
   mutations: {
     [INSERT_CELL](state, tile) {
