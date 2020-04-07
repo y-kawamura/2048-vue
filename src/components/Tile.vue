@@ -77,7 +77,7 @@ export default {
     },
   },
   mounted() {
-    this.$store.subscribeAction(action => {
+    this.$store.subscribeAction((action) => {
       if (action.type === 'resetBoard') {
         this.startAnimation();
       }
@@ -87,27 +87,53 @@ export default {
 </script>
 
 <style lang="scss">
-$cellSize: 5rem;
-$margin: 0.5rem;
+$cell-margin: 0.5rem;
+
+$cell-size-xs: 4rem;
+$cell-size: 5rem;
+
+$numberSize-xs: 1.5rem;
+$number4digitSize-xs: 1.2rem;
+$numberSize: 2rem;
+$number4digitSize: 1.5rem;
+
 $popup-animation-time: 200ms;
 $move-animation-time: 100ms;
 
+$bp-smartphone: 520px;
+
+@mixin smartphone {
+  @media ( max-width: #{$bp-smartphone} ) {
+    @content;
+  }
+}
+
 .tile-outer {
-  width: $cellSize;
-  height: $cellSize;
-  margin: $margin;
+  width: $cell-size;
+  height: $cell-size;
+
+  @include smartphone {
+    width: $cell-size-xs;
+    height: $cell-size-xs;
+  }
+
+  margin: $cell-margin;
   border-radius: 0.5rem;
   background-color: #393a41;
 }
 
 .tile {
+  font-size: $numberSize;
+  @include smartphone {
+    font-size: $numberSize-xs;
+  }
+
   width: 100%;
   height: 100%;
   border-radius: 0.5rem;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 2rem;
   color: #eee;
 }
 
@@ -141,8 +167,8 @@ $move-animation-time: 100ms;
   }
 }
 
-@function distance($value) {
-  @return $cellSize * $value + $margin * $value;
+@function previosTilePosition($cell-size, $value) {
+  @return ($cell-size + $cell-margin) * $value;
 }
 
 @for $x from -3 through 3 {
@@ -151,7 +177,10 @@ $move-animation-time: 100ms;
   }
   @keyframes slide_#{$x}x_0y {
     0% {
-      transform: translate(distance($x), 0);
+      transform: translate(previosTilePosition($cell-size, $x), 0);
+      @include smartphone {
+        transform: translate(0, previosTilePosition($cell-size-xs, $x), 0);
+      }
     }
     100% {
       transform: translate(0, 0);
@@ -165,7 +194,10 @@ $move-animation-time: 100ms;
   }
   @keyframes slide_0x_#{$y}y {
     0% {
-      transform: translate(0, distance($y));
+      transform: translate(0, previosTilePosition($cell-size, $y));
+      @include smartphone {
+        transform: translate(0, previosTilePosition($cell-size-xs, $y));
+      }
     }
     100% {
       transform: translate(0, 0);
@@ -204,10 +236,16 @@ $move-animation-time: 100ms;
 }
 .tile-1024 {
   background-color: #476be2;
-  font-size: 1.5rem;
+  font-size: $number4digitSize;
+  @include smartphone {
+    font-size: $number4digitSize-xs;
+  }
 }
 .tile-2048 {
   background-color: #1b63e9;
-  font-size: 1.5rem;
+  font-size: $number4digitSize;
+  @include smartphone {
+    font-size: $number4digitSize-xs;
+  }
 }
 </style>
