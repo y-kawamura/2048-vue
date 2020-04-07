@@ -64,14 +64,24 @@ export default {
         this.doneSlideAnimation = true;
       }
     },
-  },
-  watch: {
-    // to restart animation
-    moveCount() {
+    startAnimation() {
       this.donePopupAnimation = false;
       this.donePopupMergeAnimation = false;
       this.doneSlideAnimation = false;
     },
+  },
+  watch: {
+    // to restart animation
+    moveCount() {
+      this.startAnimation();
+    },
+  },
+  mounted() {
+    this.$store.subscribeAction(action => {
+      if (action.type === 'resetBoard') {
+        this.startAnimation();
+      }
+    });
   },
 };
 </script>
